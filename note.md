@@ -692,3 +692,349 @@ var son = new Son();
     })();
 
 ```
+### 对象、变量、属性
+* 命名空间: 管理全局变量，防止全局变量污染，适用于模块化开发
+> webpack
+
+> 利用闭包
+``` js
+    //形成闭包，变量私有化，特用的功能写到立即闭包里面，留出接口方便启动，而且变量名互相不污染
+    var name = 'bcd';
+    var init = (function(){
+        var name = 'abc';
+        function callName(){
+            console.log(name);
+        }
+        return function(){
+            callName();
+        }
+    }());
+```
+* 链式调用
+``` js
+    // $('div').css('background-color', 'red').width(100).height(100);
+    var deng = {
+        smoke: function(){
+            console.log('Somking is xuan cool!');
+            //不写return，隐式 return undefined
+            return this;
+        },
+        drink: function(){
+            console.log('drinking, ye cool!');
+            return this;
+        },
+        perm: function(){
+            console.log('preming, cool!');
+            return this;
+        }
+    }
+    deng.somke().drink().perm();
+```
+* 访问属性
+``` js
+    var deng = {
+        wife1 : {name : 'xiaoliu'},
+        wife2 : {name : 'xiaowang'}
+    }
+    deng.wife1;
+    deng['wife'+1];
+```
+* 对象的枚举(遍历)
+``` js
+    //数组
+    var arr = [1, 2, 3, 4, 5, 6];
+    for(var i = 0; i < arr.length; i++){
+        console.log(arr[i]);
+    }
+    //对象
+    var obj = {
+        name : '123',
+        age ：12,
+        sex : 'male',
+        height : 100,
+        width ：14,
+        __proto__ : {
+            lastName : 'deng'
+        }
+    }
+    for(var prop in obj){
+        //排除原型链上的属性，但是不会延展到Object的属性，只会延展自己定义的属性
+        if(obj.hasOwnProperty(prop)){       
+            console.log(obj[porp]);
+        }
+        console.log(prop + ' ' + typeof(prop));
+    }
+```
+* in操作符
+``` js
+    'height' in obj;    //true: 'height' 必须是字符串
+    'lastName' in obj;  //true: in 可以访问到原型链上的属性
+```
+* instanceof
+> A instanceof B : A是不是B构造函数构造出来的  
+> 看A对象的原型链上有没有B的原型
+``` js
+    function Person(){
+
+    }
+    var person = new Person();
+    person instanceof Person;   //true:
+    person instanceof Object;   //true: 
+    [] instanceof Array;        //true:
+    [] instanceof Object;       //true:
+
+    //看A对象的原型链上有没有B的原型
+    Person.prototype.lastName = 'deng';
+    function Person() {
+
+    }
+    var person = new Person();
+    Student.prototype.lastName = 'liu';
+    function Student() {
+
+    }
+    var student = new Student();
+    student instanceof Student;     //true
+    student.__proto__ = person;
+    student instanceof Student;     //false
+    student instanceof Person;      //true
+```
+* 判断类型
+``` js
+    var a = {};
+    //1、constructor
+    [].constructor; //ƒ Array() { [native code] }
+    a.constructor;  //ƒ Object() { [native code] }
+    //2、instanceof
+    [] instanceof Array;    //true
+    a instanceof Object;    //true
+    a instanceof Array;     //false
+    //3、toString
+    Object.prototype.toString.call([]); //"[object Array]"
+    Object.prototype.toString.call({}); //"[object Object]"
+    //原理：
+    // Object.prototype.toString = function(){
+    //     //识别this
+    //     //返回相应的结果
+    // }
+```
+* 克隆
+``` js
+    var 
+    //浅克隆
+
+    //深克隆
+```
+
+### 笔试题讲解
+``` js
+    //1、
+    var x = 1, y = z = 0;
+    function add(n){
+        return n = n + ;
+    }
+    y = add(x);
+    function add(n){
+        return n = n + 3;
+    }
+    z = add(x);
+    //考点：1、数字类型是原始值，不是引用值，n = n + 1 不会改变 x 的值
+    //2、add 函数声明后面会覆盖前面，所以最后 y z 值相等
+```
+``` js
+    //2、输出结果是{1,2,3}的是：
+    function foo(x){
+        console.log(arguments);
+    }
+    foo(1,2,3);     
+    //正确
+
+    function foo(x){
+        console.log(arguments);
+    }(1,2,3)    
+    //没有输出，但是不报错，函数声明和小括号被分开识别
+    //function foo(x){} 和表达式 (1,2,3)
+    function foo(x){}() 
+    //小括号没传参，只能识别为要执行一个函数声明，所以报错，只有表达式能被执行
+
+    (function foo(x){
+        cosnole.log(arguments);
+    })(1,2,3)
+    //正确
+
+    function foo() { bar.apply(null, arguments);}
+    function bar() {console.log(arguments);}
+    foo(1,2,3);
+    //正确
+```
+``` js
+    //3、以下表达式的结果是什么
+    parseInt(3, 8); // 3
+    parseInt(3, 2); // NaN 2进制数只有1和0，没有3
+    parseInt(3, 0); // 3 参数0默认10进制，有的老浏览器会报错
+```
+``` js
+    //4、以下哪些是js语言typeof可能返回的结果
+    // string   1
+    // array    0
+    // object   1
+    // null     0
+```
+``` js
+    //5、结果
+    function b (x, y, a){
+        arguments[2] = 10;
+        console.log(a);
+    }
+    b(1, 2, 3);
+    function bb(x, y, a){
+        a = 10;
+        console.log(arguments[2]);
+    }
+    bb(1, 2, 3);
+    bb(1, 2);   //形参a没有对应的实参，不能与arguments[2]形成映射关系
+```
+``` js
+    //6、结果
+    var f = ({
+        function f () {return '1';},
+        function g () {return 2;}
+    })();
+    typeof(f);
+    //','逗号操作符，返回后面的
+    var num = (1, 2, 3);   // num --- > 3
+```
+``` js
+    //7、
+    var x = 1;
+    if(function f () {}){
+        x += typeof (f);
+    }
+    console.log(x);
+    // function 被 () 变成表达式，function可以立即执行也会自动忽略它的引用
+```
+``` js
+    //8、
+    undefined === null      //false
+    undefined == null       //true
+    isNaN("100")            //false
+    //NaN 有隐式类型转换也什么都不相等
+    //NaN == 任何值  --- > false
+    //NaN === 任何值 --- > false
+    function isNaN(num){
+        var ret == Number(num);
+        ret += '';
+        if(ret == 'NaN'){
+            return true;
+        }
+        return false;
+    }
+    parseInt('1a') === 1    //true
+    //{} == {} --> false  对象比较的是地址
+```
+``` js
+    //9、
+    var foo = '123';
+    function print(){
+        var foo = '456';
+        this.foo = '789';
+        console.log(foo);
+    }
+    print(); --> 456
+```
+``` js
+    //10、
+    var name = '222';
+    var a = {
+        name : '111'
+        say : function(){
+            console.log(this.name);
+        }
+    }
+    var fun = a.say;
+    fun();              // 222
+    a.say();            // 111
+    var b = {
+        name : '333',
+        say : function(fun){
+            fun();
+        }
+    }
+    b.say(a.say);      // 222 fun()并没有任何对象调用
+    b.say = a.say;
+    b.say();            // 333
+```
+* typeof 返回是字符串类型
+> 3个基础类型：string number boolean  
+> undefined  
+> object (null)  
+> function
+``` js
+typeof 1;           //number
+
+typeof NaN;         //number
+
+typeof Number.MIN_VALUE;    //number
+
+typeof Infinity;    //number Infinity代表了超出JavaScript处理范围的数值
+//数字类型: 整数，浮点数，进制数，指数，NaN 和 Infinity
+
+typeof "123";       //number
+
+typeof true;        //boolean
+
+typeof window;      //object
+
+typeof document;    //object
+
+typeof null;        //object
+
+typeof eval;        //function
+
+typeof Date;        //function
+
+typeof sss;         //undefined
+
+typeof undefined;   //undefined
+```
+* 6个转换成false 的表达式
+> false, '', 0, undefined, null, NaN
+
+### this
+* 函数预编译过程，this --> window，函数执行前预编译
+* 全局作用域里, this --> window
+* call/apply可以改变函数运行时this指向
+* obj.func(); func()里面的this指向obj
+``` js
+    // 函数执行，预编译
+    function test(c){
+        var a = 123;
+        function b () {}
+        //return undefined;
+    }
+    test(1);
+    AO : {
+        arguments : [1],
+        this : window,
+        c : 1,
+        b : function
+    }
+    
+    //构造函数预编译
+    function test(c){
+        //var this = Object.create(test.prototype);
+        // {
+        //     __proto__ : test.prototype;
+        // }
+        var a = 123;
+        function b () {}
+        //return this;
+    }
+    new test(1);
+    AO : {
+        arguments : [1],
+        this : new的对象,   // window被覆盖
+        c : 1,
+        b : function
+    }
+```

@@ -11,22 +11,17 @@
 
 <body>
     <script>
-        function Person(name, age, sex){
-            var a = 0;
-            this.name = name;
-            this.age = age;
-            this.sex = sex;
-            function sss(){
-                a ++;
-                document.write(a);
-            }
-            this.say = sss;
+        Person.prototype.lastName = 'deng';
+        function Person() {
+
         }
-        var p1 = new Person();
-        p1.say();
-        p1.say();
-        var p2 = new Person();
-        p2.say();
+        var person = new Person();
+        Student.prototype.lastName = 'liu';
+        function Student() {
+
+        }
+        var student = new Student();
+
     </script>
 </body>
 
