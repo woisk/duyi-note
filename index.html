@@ -11,16 +11,49 @@
 
 <body>
     <script>
-        Person.prototype.lastName = 'deng';
-        function Person() {
-
+        function clone(origin, target) {
+            var target = target || {};
+            if (origin == null || origin == undefined) {
+                target = origin;
+            } else if (typeof origin == 'object') {
+                for (var prop in origin) {
+                    if (origin.hasOwnProperty(prop)) {
+                        var toStr = Object.prototype.toString.call(origin[prop]);
+                        if (toStr == '[object Array]') {
+                            var arr = [];
+                            for (var i = 0; i < origin[prop].length; i++) {
+                                arr[i] = clone(origin[prop][i]);
+                            }
+                            target[prop] = arr;
+                        } else if (toStr == '[object Object]') {
+                            target[prop] = clone(origin[prop]);
+                        } else {
+                            target[prop] = origin[prop];
+                        }
+                    }
+                }
+            } else {
+                target = origin;
+            }
+            return target;
         }
-        var person = new Person();
-        Student.prototype.lastName = 'liu';
-        function Student() {
-
+        var origin = {
+            name: 'liuqiang',
+            arr: [
+                {
+                    sex: 'male'
+                },
+                {
+                    size: 100
+                },
+                123
+            ],
+            work: {
+                language: 'js'
+            }
         }
-        var student = new Student();
+        var target = clone(origin);
+        console.log(target);
 
     </script>
 </body>

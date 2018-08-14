@@ -937,8 +937,10 @@ var son = new Son();
     var foo = '123';
     function print(){
         var foo = '456';
-        this.foo = '789';
+        this.foo = '789';   //this.foo -- > window.foo (预编译)
         console.log(foo);
+        //如果没有var foo，输出789
+        //如果没有var foo，new print()， 输出456
     }
     print(); --> 456
 ```
@@ -963,6 +965,78 @@ var son = new Son();
     b.say(a.say);      // 222 fun()并没有任何对象调用
     b.say = a.say;
     b.say();            // 333
+```
+``` js
+    // 11、test() 和 new test() 分别输出什么
+    var a = 5;
+    function test(){
+        a = 0;
+        console.log(a);
+        console.log(this.a);
+        var a ;
+        console.log(a);
+    }
+    test();     // 0, 5, 0
+    new test(); // 0, undefined, 0
+```
+``` js
+    function print(){
+        console.log(foo);       //undefined
+        var foo = 2;
+        console.log(foo);       //2
+        console.log(hello);     //报错, hello is not defined
+    }
+    print();
+```
+``` js
+    function print(){
+        var test;
+        test();
+        function test(){
+            console.log(1);
+        }
+    }
+    print();        //1
+```
+``` js
+    function print(){
+        var x = 1;
+        if(x == '1') console.log('One!');   //One!
+        if(x === '1') console.log('Two!');  //不输出
+    }
+    print();
+```
+``` js
+    function print(){
+        var marty = {
+            name : 'marty',
+            printName : function(){
+                console.log(this.name);
+            }
+        }
+        var test1 = {name:'test1'};
+        var test2 = {name:'test2'};
+        var test3 = {name:'test3'};
+        test3.printName = marty.printName;
+        var printName2 = marty.printName.bind({name:123});
+        marty.printName.call(test1);    //test1
+        marty.printName.apply(test2);   //test2
+        printName2();                   //123
+        test3.printName();              //test3
+    }
+    print();
+```
+``` js
+    var bar = {a:'002'};
+    function print(){
+        bar.a = 'a';
+        Object.prototype.b = 'b';
+        return function inner(){
+            console.log(bar.a);     //a
+            console.log(bar.b);     //b
+        }
+    }
+    print()();
 ```
 * typeof 返回是字符串类型
 > 3个基础类型：string number boolean  
@@ -1037,4 +1111,100 @@ typeof undefined;   //undefined
         c : 1,
         b : function
     }
+```
+---
+### arguments
+* arguments.callee
+> 指向函数自己的引用
+``` js
+    function test (){
+        console.log(arguments.callee == test);  // true
+    }
+```
+``` js
+    // 在立即执行函数中递归调用自己（没有函数名）
+    var num = (function(n){
+        if(n == 1){
+            return 1;
+        }
+        // return n * 阶乘(n-1);
+        return n * arguments.callee(n-1);
+    }(10));
+```
+``` js
+    // 在哪个函数里就指向哪个函数
+    function test (){
+        console.log(arguments.callee);
+        function demo(){
+            console.log(arguments.callee);
+        }
+    }
+```
+* function.caller
+> 严格模式下不能使用 `use strict`  
+> 函数被调用的环境
+``` js
+    function test(){
+        demo();
+    }
+    function demo(){
+        console.log(demo.caller); 
+    }
+    test();     //test
+```
+---
+### 深度克隆
+``` js
+    // 浅拷贝，只适用于属性值是原始值的类型
+    function clone(origin, target){
+        var target = target || {};
+        for(var prop in origin){
+            target[prop] = origin[prop];
+        }
+        return target;
+    }
+    // 深拷贝
+    function clone(origin, target) {
+        var target = target || {};
+        if (origin == null || origin == undefined) {
+            target = origin;
+        } else if (typeof origin == 'object') {
+            for (var prop in origin) {
+                if (origin.hasOwnProperty(prop)) {
+                    var toStr = Object.prototype.toString.call(origin[prop]);
+                    if (toStr == '[object Array]') {
+                        var arr = [];
+                        for (var i = 0; i < origin[prop].length; i++) {
+                            arr[i] = clone(origin[prop][i]);
+                        }
+                        target[prop] = arr;
+                    } else if (toStr == '[object Object]') {
+                        target[prop] = clone(origin[prop]);
+                    } else {
+                        target[prop] = origin[prop];
+                    }
+                }
+            }
+        } else {
+            target = origin;
+        }
+        return target;
+    }
+    var origin = {
+        name : 'liuqiang',
+        arr : [
+            obj : {
+                sex : 'male'
+            },
+            car : {
+                size : 100
+            },
+            123
+        ],
+        work : {
+            language : 'js'
+        }
+    }
+    var target = clone(origin);
+    console.log(target);
 ```
