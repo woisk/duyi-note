@@ -11,50 +11,40 @@
 
 <body>
     <script>
-        function clone(origin, target) {
-            var target = target || {};
-            if (origin == null || origin == undefined) {
-                target = origin;
-            } else if (typeof origin == 'object') {
-                for (var prop in origin) {
-                    if (origin.hasOwnProperty(prop)) {
-                        var toStr = Object.prototype.toString.call(origin[prop]);
-                        if (toStr == '[object Array]') {
-                            var arr = [];
-                            for (var i = 0; i < origin[prop].length; i++) {
-                                arr[i] = clone(origin[prop][i]);
-                            }
-                            target[prop] = arr;
-                        } else if (toStr == '[object Object]') {
-                            target[prop] = clone(origin[prop]);
+        var obj = {
+            name : 'abc',
+            age : 123,
+            card : ['visa', 'master'],
+            wife : {
+                name : 'bcd',
+                son : {
+                    name : 'aaa'
+                }
+            }
+        }
+        function deepClone(origin, target) {
+            //1、判断是不是原始值       typeof() object
+            //2、判断是数组还是对象     arr.instanceof, toString, constructor 
+            //3、建立相应的数组或对象
+            var target = target || {},  //容错
+                toStr = Object.prototype.toString,
+                arrStr = '[object Array]';
+
+            for(var prop in origin){
+                if(origin.hasOwnProperty(prop)){
+                    if(originp[prop] !== null && typeof(origin[prop]) == 'object'){
+                        if(toStr.call(origin[prop]) == arrStr){
+                            target[prop] = [];
                         } else {
-                            target[prop] = origin[prop];
+                            target[prop] = {};
                         }
+                    } else {
+                        deepClone(origin[propp], target[prop]);
                     }
                 }
-            } else {
-                target = origin;
             }
             return target;
         }
-        var origin = {
-            name: 'liuqiang',
-            arr: [
-                {
-                    sex: 'male'
-                },
-                {
-                    size: 100
-                },
-                123
-            ],
-            work: {
-                language: 'js'
-            }
-        }
-        var target = clone(origin);
-        console.log(target);
-
     </script>
 </body>
 

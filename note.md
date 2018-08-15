@@ -1207,4 +1207,46 @@ typeof undefined;   //undefined
     }
     var target = clone(origin);
     console.log(target);
+
+    // 12节 第1课
+    ///标准答案
+    function deepClone(origin, target) {
+        //1、判断是不是原始值       typeof() object
+        //2、判断是数组还是对象     arr.instanceof, toString, constructor 
+        //3、建立相应的数组或对象
+        // for in 也可以遍历数组
+        var target = target || {},  //容错
+            toStr = Object.prototype.toString,
+            arrStr = '[object Array]';
+
+        for(var prop in origin){
+            if(origin.hasOwnProperty(prop)){
+                if(originp[prop] !== null && typeof(origin[prop]) == 'object'){
+                    if(toStr.call(origin[prop]) == arrStr){
+                        target[prop] = [];
+                    } else {
+                        target[prop] = {};
+                    }
+                    /// 标准答案简化
+                    target[prop] = toStr.call(origin[prop]) == arrStr ? [] : {};
+
+                    deepClone(origin[prop], target[prop]);
+                } else {
+                    target[prop] = origin[prop];
+                }
+            }
+        }
+        return target;
+    }
+    var obj = {
+        name : 'abc',
+        age : 123,
+        card : ['visa', 'master'],
+        wife : {
+            name : 'bcd',
+            son : {
+                name : 'aaa'
+            }
+        }
+    }
 ```
