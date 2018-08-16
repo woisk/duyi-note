@@ -11,40 +11,7 @@
 
 <body>
     <script>
-        var obj = {
-            name : 'abc',
-            age : 123,
-            card : ['visa', 'master'],
-            wife : {
-                name : 'bcd',
-                son : {
-                    name : 'aaa'
-                }
-            }
-        }
-        function deepClone(origin, target) {
-            //1、判断是不是原始值       typeof() object
-            //2、判断是数组还是对象     arr.instanceof, toString, constructor 
-            //3、建立相应的数组或对象
-            var target = target || {},  //容错
-                toStr = Object.prototype.toString,
-                arrStr = '[object Array]';
-
-            for(var prop in origin){
-                if(origin.hasOwnProperty(prop)){
-                    if(originp[prop] !== null && typeof(origin[prop]) == 'object'){
-                        if(toStr.call(origin[prop]) == arrStr){
-                            target[prop] = [];
-                        } else {
-                            target[prop] = {};
-                        }
-                    } else {
-                        deepClone(origin[propp], target[prop]);
-                    }
-                }
-            }
-            return target;
-        }
+        
     </script>
 </body>
 

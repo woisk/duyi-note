@@ -1250,3 +1250,69 @@ typeof undefined;   //undefined
         }
     }
 ```
+###数组
+* js的数组基于对象，越界取值赋值不会报错，除非调用数组没有的方法
+> 定义方式：  
+> 字面量形式：`var arr = [1,2,3,4];` 
+> 构造函数形式：`var arr = new Array(1,2,3,4);`  
+
+>`new Array()` 如果只传1个整数参数，这个参数只代表数组长度，如: `new Array(4)` 表示定义一个长度为4的数组，所以只有一个参数也不能是浮点数，因为长度不能是浮点数
+
+* 数组的常用方法：es3.0 es5.0 es6.0 的版本
+> ECMAScript, DOM,  BOM
+* 1、改变原数组
+``` js 
+    //push:在数组后面添加，返回数组长度，原理：
+    Array.prototype.push = function(){
+        for(var i = 0; i < arguments.length; i++){
+            this[this.length] = arguments[i];
+        }
+        return this.length;
+    }
+    // pop：删除，把数组的最后一个剪切并返回
+    // shift 删除，把数组的第一个剪切并返回
+    // unshift 在数组的前面添加，返回数组长度
+    // reverse 逆转数组
+    // splice(index, length, data)  从index位开始，截取length长度，在切口出添加新数据，返回截取的数组
+    //  arr.splice(index, length, data) 
+        //  -->arr.splice(index, length); --> arr.push(data);
+        //  arr.splice(-1, length)
+        //  --> -1表示倒数第一位：index= -1 + arr.length
+    // sort()  升序排序
+    // sort(1, 4, 6, 2, 10) --> [1, 10, 2, 4, 6]: 转字符串按ASC码比骄傲
+    var arr = [1, 3, 5, 4, 10];
+    arr.sort(function(a,b){
+        // 从0位开始，按冒泡排序的规则传入
+        //1、必须写两个形参
+        //2、看返回值 1）当返回值为负数时，那么前面的数放在前面
+        //           2）当返回值位整数，那么后面的数放在前面
+        //           3）为0，不动
+        // 例如：
+        return a - b;   // 降序
+        return b - a;   // 升序
+        return Math.random() - 0.5;     //乱序
+    });
+```
+* 2、不改变原数组
+``` js
+    // concat 连接两个数组并返回新数组
+    // join('') 参数最好传字符串，按照传的参数把值连接成一个字符串
+    // split('') 按照参数把字符串拆分成数组
+    // join不传参按','逗号连接
+    var arr = [1,2,3];
+    var str = arr.join('-');    // "1-2-3"
+    var newArr = str.split('-');    //  ["1", "2", "3"]
+    // 例子：连接字符串
+    var str0 = '123';
+    var str1 = '234';
+    var str2 = '432';
+    var str = str0 + str1 + str2;   //方法1
+    var arr = [str0, str1, str2];   //方法2，数组，for循环
+    var str = arr.join('');         //方法3，数组，join
+    // 方法1、2效率低，字符串在栈空间，先进后出每次取值很费
+    // 方法3效率高，数组是堆空间，散列...(不懂)
+    
+    // toString 转字符串
+    // slice(index) 从index位开始截取到末尾，index可为负数
+    
+```
