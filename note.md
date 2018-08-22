@@ -1314,5 +1314,21 @@ typeof undefined;   //undefined
     
     // toString 转字符串
     // slice(index) 从index位开始截取到末尾，index可为负数
-    
 ```
+### try catch
+* Error.name的六种值对应的信息
+> 1、EvalError：eval()的使用与定义不一致  
+> 2、RangeError: 数值越界  
+> 3、ReferenceError: 非法或不能识别的引用数值  
+> 4、SyntaxError: 发生语法错误  
+> 5、TypeError: 操作数类型错误
+> 6、URIError: URI处理函数使用不当  
+* es5严格模式`'use strict'`
+> 不再兼容es3的一些不规则语法，使用全新的es5规范
+> 两种用法：  
+> 1、全局严格模式
+> 2、局部函数内严格模式（推荐）  
+> 就是一行字符串，不会对不兼容严格模式的浏览器产生影响
+> 不支持with,arguments.callee,func.caller；  
+> 变量赋值前不惜声明，局部this必须被赋值，赋值什么就是什么；  
+> 拒绝重复属性和参数  
