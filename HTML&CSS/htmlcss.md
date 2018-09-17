@@ -1015,3 +1015,66 @@ a {
     color: white;
 }
 ```
+
+### 文字溢出，背景图片处理，企业开发经验
+* 1、单行文本
+``` css
+p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+```
+* 2、多行文本
+计算字符宽度，手动修改增加`...`，阶段
+
+* 3、背景图片
+``` css
+div {
+  /* 容器尺寸 */
+  width: 200px;
+  height: 200px;
+  border: 1px solid black;
+  background-image: url(img/055.jpg);
+  /* 背景内容尺寸 */
+  background-size: 100px 100px;
+  /* 背景图片不重复 */
+  background-repeat: no-repeat;
+  /* 居中 */
+  background-position: 100px 100px;
+  background-position: center center;
+  background-position: 50% 50%;
+}
+```
+* 4、当js与css未正常加载时，显示默认文字
+``` html
+<a href="#" target="_blank">淘宝网</a>
+```
+``` css
+a {
+  /* 去掉a标签默认样式 */
+  display: inline-block;
+  text-decoration: none;
+  color: #424242;
+  /* 基本样式 */
+  width: 143px;
+  height: 49px;
+  background-image: url(img/taobao.png);
+  background-size: 143px 49px;
+  border: 1px solid black;
+
+  /* 方案1 :设置缩进，把文字内容挤出图片区域*/
+  text-indent: 143;
+  overflow: hidden;
+  white-space: nowrap;
+
+  方案2：用padding撑开区域（背景图片或者颜色会覆盖padding）
+  height: 0;
+  padding-top: 49px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+```
+> 元素嵌套规则：
+行级元素只能嵌套行级元素，块级元素可以嵌套行级元素和块级元素，p标签特殊：不能嵌套div
+a标签不能嵌套a标签
